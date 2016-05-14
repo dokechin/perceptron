@@ -3,6 +3,7 @@ use warnings;
 use Data::Dumper;
 use Perceptron;
 use PDL;
+use Test::More;
 
 my $size = 4;
 my $p = Perceptron->new($size);
@@ -31,12 +32,15 @@ printf "%s\n", $p->{weight};
 
 # predict
 my @testdata = (
-    pdl(2, 2, 0, 0),  # maybe 1
-    pdl(1, 2, 0, 0),  # maybe 1
-    pdl(0, 0, 2, 2),  # maybe 0
-    pdl(0, 0, 2, 1),  # maybe 0
+    { data => pdl(2, 2, 0, 0),  expected => 1} , # maybe 1
+    { data => pdl(1, 2, 0, 0),  expected => 1} , # maybe 1
+    { data => pdl(0, 0, 2, 2),  expected => 0} , # maybe 0
+    { data => pdl(0, 0, 2, 1),  expected => 0} , # maybe 0
 );
 foreach my $data (@testdata) {
-    my $result = $p->predict($data);
-    print "$result\n";
+    my $result = $p->predict($data->{data});
+    is ($result, $data->{expected});
 }
+
+done_testing;
+
